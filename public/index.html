@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEOFAVICON // CONVERTER</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+    
+    :root {
+      --neon-blue: #0ff;
+      --neon-pink: #f0c;
+      --neon-green: #0f8;
+      --dark-bg: #0a0a12;
+      --darker-bg: #050508;
+      --panel-bg: rgba(16, 16, 32, 0.8);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Share Tech Mono', monospace;
+      background-color: var(--dark-bg);
+      color: #fff;
+      line-height: 1.6;
+      background-image: 
+        linear-gradient(rgba(10, 10, 18, 0.95), rgba(10, 10, 18, 0.95)),
+        repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 255, 255, 0.05) 2px, rgba(0, 255, 255, 0.05) 4px);
+      position: relative;
+      overflow-x: hidden;
+    }
+    
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(0, 255, 255, 0.03), transparent 30%),
+        radial-gradient(circle at 80% 70%, rgba(255, 0, 204, 0.03), transparent 30%);
+      pointer-events: none;
+    }
+    
+    /* Binary decoration */
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.05;
+      background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='5' y='10' font-family='monospace' font-size='5' fill='%230ff'%3E01%3C/text%3E%3Ctext x='20' y='10' font-family='monospace' font-size='5' fill='%230ff'%3E10%3C/text%3E%3Ctext x='5' y='20' font-family='monospace' font-size='5' fill='%230ff'%3E00%3C/text%3E%3Ctext x='20' y='20' font-family='monospace' font-size='5' fill='%230ff'%3E11%3C/text%3E%3Ctext x='5' y='30' font-family='monospace' font-size='5' fill='%230ff'%3E10%3C/text%3E%3Ctext x='20' y='30' font-family='monospace' font-size='5' fill='%230ff'%3E01%3C/text%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: -1;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 20px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+      position: relative;
+      padding: 1rem;
+    }
+    
+    .title {
+      font-size: 2.5rem;
+      color: white;
+      text-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue);
+      letter-spacing: 2px;
+      animation: pulse 4s infinite alternate;
+    }
+    
+    .subtitle {
+      color: var(--neon-pink);
+      font-size: 1rem;
+      letter-spacing: 1px;
+      text-shadow: 0 0 5px var(--neon-pink);
+      margin-top: 0.5rem;
+    }
+    
+    .system-time {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      border: 1px solid var(--neon-blue);
+      border-radius: 4px;
+      padding: 5px 10px;
+      font-size: 0.9rem;
+      color: var(--neon-blue);
+      text-shadow: 0 0 5px var(--neon-blue);
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+    
+    .panel {
+      background-color: var(--panel-bg);
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .panel {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .panel::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink)) border-box;
+      -webkit-mask:
+        linear-gradient(#fff 0 0) padding-box, 
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      animation: borderPulse 4s infinite alternate;
+    }
+    
+    .panel::after {
+      content: "";
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      right: -1px;
+      bottom: -1px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px var(--neon-blue);
+      opacity: 0;
+      pointer-events: none;
+      animation: glowPulse 2.5s infinite alternate;
+      z-index: -1;
+    }
+    
+    .panel-header {
+      padding: 1rem;
+      border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .panel-title {
+      color: var(--neon-blue);
+      font-size: 1.2rem;
+      text-shadow: 0 0 5px var(--neon-blue);
+    }
+    
+    .status-pill {
+      background-color: rgba(0, 255, 136, 0.2);
+      color: var(--neon-green);
+      border: 1px solid var(--neon-green);
+      border-radius: 50px;
+      padding: 5px 10px;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+    }
+    
+    .panel-content {
+      padding: 1.5rem;
+    }
+    
+    .upload-container {
+      border: 2px dashed rgba(0, 255, 255, 0.5);
+      border-radius: 8px;
+      padding: 2rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      background-color: rgba(0, 255, 255, 0.05);
+    }
+    
+    .upload-container:hover, .upload-container.dragover {
+      border-color: var(--neon-blue);
+      background-color: rgba(0, 255, 255, 0.1);
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+    }
+    
+    .file-input {
+      display: none;
+    }
+    
+    .cyber-btn {
+      background-color: transparent;
+      color: var(--neon-blue);
+      border: 1px solid var(--neon-blue);
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      text-shadow: 0 0 5px var(--neon-blue);
+      margin: 0.5rem;
+    }
+    
+    .cyber-btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
+      transition: all 0.6s ease;
+    }
+    
+    .cyber-btn:hover {
+      background-color: rgba(0, 255, 255, 0.1);
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+      transform: translateY(-2px);
+    }
+    
+    .cyber-btn:hover::before {
+      left: 100%;
+    }
+    
+    #status {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      border-radius: 4px;
+      display: none;
+      text-align: center;
+    }
+    
+    .success {
+      background-color: rgba(0, 255, 136, 0.1);
+      color: var(--neon-green);
+      border: 1px solid var(--neon-green);
+    }
+    
+    .error {
+      background-color: rgba(255, 0, 102, 0.1);
+      color: var(--neon-pink);
+      border: 1px solid var(--neon-pink);
+    }
+    
+    .loading {
+      display: none;
+      text-align: center;
+      margin: 20px 0;
+    }
+    
+    .spinner {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      position: relative;
+    }
+    
+    .spinner::before, .spinner::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      border-top-color: var(--neon-blue);
+      border-bottom-color: var(--neon-pink);
+      animation: spin 1.5s linear infinite;
+    }
+    
+    .spinner::before {
+      z-index: 100;
+    }
+    
+    .spinner::after {
+      border: 2px solid transparent;
+      border-left-color: var(--neon-blue);
+      border-right-color: var(--neon-pink);
+      animation: spin 1s linear infinite reverse;
+    }
+    
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    
+    .preview-item {
+      background-color: rgba(16, 16, 32, 0.6);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      border-radius: 6px;
+      padding: 1rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    
+    .preview-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 255, 255, 0.2);
+      border-color: var(--neon-blue);
+    }
+    
+    .preview-image {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 1rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 80px;
+    }
+    
+    .size-label {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 0.5rem;
+    }
+    
+    .download-link {
+      color: var(--neon-blue);
+      text-decoration: none;
+      font-size: 0.9rem;
+      display: inline-block;
+      padding: 5px 10px;
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+    
+    .download-link:hover {
+      background-color: rgba(0, 255, 255, 0.1);
+      border-color: var(--neon-blue);
+    }
+    
+    .stats-panel {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+      gap: 1rem;
+    }
+    
+    .stat-item {
+      flex: 1;
+      min-width: 120px;
+    }
+    
+    .stat-label {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.8rem;
+      margin-bottom: 0.3rem;
+    }
+    
+    .stat-value {
+      font-size: 1.1rem;
+      color: var(--neon-blue);
+    }
+    
+    .progress-bar {
+      height: 6px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
+      width: 30%;
+      border-radius: 3px;
+      animation: progressPulse 2s infinite alternate;
+    }
+    
+    @keyframes pulse {
+      0% {
+        opacity: 0.8;
+        text-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue);
+      }
+      100% {
+        opacity: 1;
+        text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue), 0 0 30px var(--neon-blue);
+      }
+    }
+    
+    @keyframes borderPulse {
+      0% {
+        box-shadow: 0 0 5px rgba(0, 255, 255, 0.5), inset 0 0 5px rgba(0, 255, 255, 0.2);
+      }
+      100% {
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.8), inset 0 0 10px rgba(0, 255, 255, 0.4);
+      }
+    }
+    
+    @keyframes glowPulse {
+      0% {
+        opacity: 0.2;
+        box-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue);
+      }
+      40% {
+        opacity: 0.6;
+        box-shadow: 0 0 15px var(--neon-blue), 0 0 20px var(--neon-blue);
+      }
+      60% {
+        opacity: 0.8;
+        box-shadow: 0 0 15px var(--neon-pink), 0 0 20px var(--neon-pink);
+      }
+      100% {
+        opacity: 0.3;
+        box-shadow: 0 0 10px var(--neon-pink), 0 0 15px var(--neon-pink);
+      }
+    }
+    
+    @keyframes progressPulse {
+      0% {
+        opacity: 0.7;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 15px;
+      }
+      
+      .title {
+        font-size: 2rem;
+      }
+      
+      .preview-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="system-time" id="systemTime">20:00:55.498</div>
+      <h1 class="title">NEOFAVICON</h1>
+      <div class="subtitle">// IMAGE CONVERSION SYSTEM</div>
+    </div>
+    
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">// FAVICON CONVERSION</div>
+        <div class="status-pill">READY</div>
+      </div>
+      
+      <div class="panel-content">
+        <form id="uploadForm" enctype="multipart/form-data">
+          <div class="upload-container" id="dropArea">
+            <p>DRAG AND DROP IMAGE FILE OR</p>
+            <input type="file" name="image" id="fileInput" class="file-input" accept="image/*">
+            <button type="button" class="cyber-btn" id="selectBtn">SELECT FILE</button>
+            <p id="fileName"></p>
+            <button type="submit" class="cyber-btn" id="uploadBtn" style="display: none;">CONVERT TO FAVICON</button>
+          </div>
+        </form>
+        
+        <div class="loading" id="loading">
+          <div class="spinner"></div>
+          <p>PROCESSING IMAGE. PLEASE WAIT...</p>
+        </div>
+        
+        <div id="status"></div>
+      </div>
+    </div>
+    
+    <div class="panel" id="previewPanel" style="display: none;">
+      <div class="panel-header">
+        <div class="panel-title">// OUTPUT FILES</div>
+        <div class="status-pill">COMPLETED</div>
+      </div>
+      
+      <div class="panel-content">
+        <div class="preview-grid" id="previewGrid">
+          <div class="preview-item">
+            <div class="preview-image">
+              <img src="/api/placeholder/48/48" alt="Favicon 16x16">
+            </div>
+            <div class="size-label">ICO FORMAT (16x16)</div>
+            <a href="#" class="download-link">DOWNLOAD</a>
+          </div>
+          
+          <div class="preview-item">
+            <div class="preview-image">
+              <img src="/api/placeholder/48/48" alt="Favicon 32x32">
+            </div>
+            <div class="size-label">PNG FORMAT (32x32)</div>
+            <a href="#" class="download-link">DOWNLOAD</a>
+          </div>
+          
+          <div class="preview-item">
+            <div class="preview-image">
+              <img src="/api/placeholder/48/48" alt="Favicon 48x48">
+            </div>
+            <div class="size-label">PNG FORMAT (48x48)</div>
+            <a href="#" class="download-link">DOWNLOAD</a>
+          </div>
+          
+          <div class="preview-item">
+            <div class="preview-image">
+              <img src="/api/placeholder/64/64" alt="Favicon 64x64">
+            </div>
+            <div class="size-label">PNG FORMAT (64x64)</div>
+            <a href="#" class="download-link">DOWNLOAD</a>
+          </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 2rem;">
+          <button type="button" class="cyber-btn" id="downloadAllBtn">DOWNLOAD ALL FILES</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Update system time
+    function updateSystemTime() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      const milliseconds = String(now.getMilliseconds()).padStart(3, '0');
+      document.getElementById('systemTime').textContent = `${hours}:${minutes}:${seconds}.${milliseconds.substr(0, 3)}`;
+    }
+    
+    setInterval(updateSystemTime, 100);
+    updateSystemTime();
+    
+    // Show the output panel for preview purposes
+    document.getElementById('previewPanel').style.display = 'block';
+    
+    // Add file selection logic for the demo
+    document.getElementById('selectBtn').addEventListener('click', () => {
+      document.getElementById('fileInput').click();
+    });
+    
+    document.getElementById('fileInput').addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        document.getElementById('fileName').textContent = `SELECTED: ${e.target.files[0].name}`;
+        document.getElementById('uploadBtn').style.display = 'inline-block';
+      }
+    });
+    
+    // For demo purposes, show success message when form is submitted
+    document.getElementById('uploadForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const status = document.getElementById('status');
+      const loading = document.getElementById('loading');
+      
+      // Show loading
+      loading.style.display = 'block';
+      status.style.display = 'none';
+      
+      // Simulate processing
+      setTimeout(() => {
+        loading.style.display = 'none';
+        status.textContent = 'FAVICON SUCCESSFULLY GENERATED';
+        status.className = 'success';
+        status.style.display = 'block';
+        
+        // Show preview panel
+        document.getElementById('previewPanel').style.display = 'block';
+      }, 2000);
+    });
+  </script>
+</body>
+</html>
