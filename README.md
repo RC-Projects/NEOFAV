@@ -2,7 +2,7 @@
 
 <div align="center">
   
-![NEOFAVICON]
+![NEOFAVICON](./neo_preview.png)
 
 **A cyberpunk-themed microservice for converting images to favicons**
 
