@@ -18,7 +18,7 @@ COPY package*.json ./
 
 # Install dependencies with detailed output
 RUN echo ">> INSTALLING SYSTEM DEPENDENCIES" && \
-    npm ci --only=production && \
+    npm install --production && \
     echo ">> DEPENDENCIES INSTALLED SUCCESSFULLY"
 
 # Copy app source

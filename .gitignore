@@ -29,11 +29,6 @@ public/output/*
 uploads/*
 !uploads/.gitkeep
 
-# OS specific files
-.DS_Store
-Thumbs.db
-.directory
-*.swp
 
 # Editor directories and files
 .idea/
