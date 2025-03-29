@@ -96,22 +96,14 @@ app.post('/convert', upload.single('image'), async (req, res) => {
     // Generate unique token for this conversion
     const timestamp = Date.now();
     const conversionToken = `${timestamp}-${Math.random().toString(36).substring(2, 10)}`;
-    const outputPath = path.join(outputDir, `favicon-${conversionToken}.ico`);
-    const publicPath = `/output/favicon-${conversionToken}.ico`;
-
-    console.log(chalk.yellow('>> GENERATING ICO FORMAT'));
     
-    // Convert to favicon (multiple sizes for best compatibility)
-    await sharp(filePath)
-      .resize(16, 16)
-      .toFormat('ico')
-      .toFile(outputPath);
+    // Instead of directly creating .ico (which Sharp doesn't support), 
+    // create the PNG files first including the 16x16 that we'll call the favicon
+    console.log(chalk.yellow('>> GENERATING FAVICON AND ADDITIONAL FORMATS'));
     
-    console.log(chalk.yellow('>> GENERATING ADDITIONAL FORMATS'));
-    
-    // Create multiple favicon sizes
-    const sizes = [32, 48, 64];
-    const additionalFiles = [];
+    // Process each size
+    const sizes = [16, 32, 48, 64];
+    const outputFiles = [];
     
     for (const size of sizes) {
       const pngPath = path.join(outputDir, `favicon-${size}x${size}-${conversionToken}.png`);
@@ -122,11 +114,22 @@ app.post('/convert', upload.single('image'), async (req, res) => {
         .toFormat('png')
         .toFile(pngPath);
       
-      additionalFiles.push({
-        path: publicPngPath,
-        size: `${size}x${size}`,
-        format: 'PNG'
-      });
+      // Consider the 16x16 as the "favicon" (but it's actually a PNG)
+      if (size === 16) {
+        const faviconPath = path.join(outputDir, `favicon-${conversionToken}.png`);
+        fs.copyFileSync(pngPath, faviconPath);
+        outputFiles.push({
+          path: `/output/favicon-${conversionToken}.png`,
+          size: `${size}x${size}`,
+          format: 'PNG (favicon)'
+        });
+      } else {
+        outputFiles.push({
+          path: publicPngPath,
+          size: `${size}x${size}`,
+          format: 'PNG'
+        });
+      }
     }
 
     // Log file data
@@ -137,7 +140,7 @@ app.post('/convert', upload.single('image'), async (req, res) => {
     await unlinkAsync(filePath);
     console.log(chalk.green('>> CONVERSION COMPLETE'));
 
-    // Return success response with link to favicon
+    // Return success response with links to all generated images
     res.json({
       success: true,
       status: 'SUCCESS',
@@ -154,12 +157,8 @@ app.post('/convert', upload.single('image'), async (req, res) => {
         }
       },
       output: {
-        ico: {
-          path: publicPath,
-          size: '16x16',
-          format: 'ICO'
-        },
-        additional: additionalFiles
+        favicon: outputFiles[0], // The 16x16 PNG we're calling the favicon
+        additional: outputFiles.slice(1) // The other sizes
       },
       system: {
         processingTime: Date.now() - timestamp,

@@ -111,10 +111,6 @@
       margin-bottom: 2rem;
       overflow: hidden;
       position: relative;
-    }
-    
-    .panel {
-      position: relative;
       z-index: 1;
     }
     
@@ -351,46 +347,6 @@
       border-color: var(--neon-blue);
     }
     
-    .stats-panel {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      margin-top: 1rem;
-      gap: 1rem;
-    }
-    
-    .stat-item {
-      flex: 1;
-      min-width: 120px;
-    }
-    
-    .stat-label {
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 0.8rem;
-      margin-bottom: 0.3rem;
-    }
-    
-    .stat-value {
-      font-size: 1.1rem;
-      color: var(--neon-blue);
-    }
-    
-    .progress-bar {
-      height: 6px;
-      background-color: rgba(255, 255, 255, 0.1);
-      border-radius: 3px;
-      overflow: hidden;
-      margin-top: 0.5rem;
-    }
-    
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
-      width: 30%;
-      border-radius: 3px;
-      animation: progressPulse 2s infinite alternate;
-    }
-    
     @keyframes pulse {
       0% {
         opacity: 0.8;
@@ -467,7 +423,6 @@
       <div class="subtitle">// IMAGE CONVERSION SYSTEM</div>
     </div>
     
-
     <div class="panel">
       <div class="panel-header">
         <div class="panel-title">// FAVICON CONVERSION</div>
@@ -502,37 +457,7 @@
       
       <div class="panel-content">
         <div class="preview-grid" id="previewGrid">
-          <div class="preview-item">
-            <div class="preview-image">
-              <img src="/api/placeholder/48/48" alt="Favicon 16x16">
-            </div>
-            <div class="size-label">ICO FORMAT (16x16)</div>
-            <a href="#" class="download-link">DOWNLOAD</a>
-          </div>
-          
-          <div class="preview-item">
-            <div class="preview-image">
-              <img src="/api/placeholder/48/48" alt="Favicon 32x32">
-            </div>
-            <div class="size-label">PNG FORMAT (32x32)</div>
-            <a href="#" class="download-link">DOWNLOAD</a>
-          </div>
-          
-          <div class="preview-item">
-            <div class="preview-image">
-              <img src="/api/placeholder/48/48" alt="Favicon 48x48">
-            </div>
-            <div class="size-label">PNG FORMAT (48x48)</div>
-            <a href="#" class="download-link">DOWNLOAD</a>
-          </div>
-          
-          <div class="preview-item">
-            <div class="preview-image">
-              <img src="/api/placeholder/64/64" alt="Favicon 64x64">
-            </div>
-            <div class="size-label">PNG FORMAT (64x64)</div>
-            <a href="#" class="download-link">DOWNLOAD</a>
-          </div>
+          <!-- Preview items will be generated here dynamically -->
         </div>
         
         <div style="text-align: center; margin-top: 2rem;">
@@ -556,42 +481,190 @@
     setInterval(updateSystemTime, 100);
     updateSystemTime();
     
-    // Show the output panel for preview purposes
-    document.getElementById('previewPanel').style.display = 'block';
-    
-    // Add file selection logic for the demo
-    document.getElementById('selectBtn').addEventListener('click', () => {
-      document.getElementById('fileInput').click();
-    });
-    
-    document.getElementById('fileInput').addEventListener('change', (e) => {
-      if (e.target.files.length > 0) {
-        document.getElementById('fileName').textContent = `SELECTED: ${e.target.files[0].name}`;
-        document.getElementById('uploadBtn').style.display = 'inline-block';
-      }
-    });
-    
-    // For demo purposes, show success message when form is submitted
-    document.getElementById('uploadForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      
+    // File upload handling
+    document.addEventListener('DOMContentLoaded', () => {
+      const dropArea = document.getElementById('dropArea');
+      const fileInput = document.getElementById('fileInput');
+      const selectBtn = document.getElementById('selectBtn');
+      const uploadBtn = document.getElementById('uploadBtn');
+      const form = document.getElementById('uploadForm');
       const status = document.getElementById('status');
+      const fileName = document.getElementById('fileName');
       const loading = document.getElementById('loading');
+      const previewPanel = document.getElementById('previewPanel');
+      const previewGrid = document.getElementById('previewGrid');
+      const downloadAllBtn = document.getElementById('downloadAllBtn');
       
-      // Show loading
-      loading.style.display = 'block';
-      status.style.display = 'none';
+      // File selection via button
+      selectBtn.addEventListener('click', () => {
+        fileInput.click();
+      });
       
-      // Simulate processing
-      setTimeout(() => {
-        loading.style.display = 'none';
-        status.textContent = 'FAVICON SUCCESSFULLY GENERATED';
-        status.className = 'success';
+      // File selection handler
+      fileInput.addEventListener('change', () => {
+        if (fileInput.files.length > 0) {
+          fileName.textContent = `SELECTED: ${fileInput.files[0].name}`;
+          uploadBtn.style.display = 'inline-block';
+        } else {
+          fileName.textContent = '';
+          uploadBtn.style.display = 'none';
+        }
+      });
+      
+      // Drag and drop handlers
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, preventDefaults, false);
+      });
+      
+      function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dropArea.addEventListener(eventName, () => {
+          dropArea.classList.add('dragover');
+        });
+      });
+      
+      ['dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, () => {
+          dropArea.classList.remove('dragover');
+        });
+      });
+      
+      dropArea.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        fileInput.files = dt.files;
+        
+        if (fileInput.files.length > 0) {
+          fileName.textContent = `SELECTED: ${fileInput.files[0].name}`;
+          uploadBtn.style.display = 'inline-block';
+        }
+      });
+      
+      // Form submission
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        if (!fileInput.files.length) {
+          showStatus('ERROR: PLEASE SELECT AN IMAGE FILE', false);
+          return;
+        }
+        
+        // Show loading
+        loading.style.display = 'block';
+        status.style.display = 'none';
+        uploadBtn.disabled = true;
+        
+        const formData = new FormData();
+        formData.append('image', fileInput.files[0]);
+        
+        try {
+          const response = await fetch('/convert', {
+            method: 'POST',
+            body: formData
+          });
+          
+          const result = await response.json();
+          
+          // Hide loading
+          loading.style.display = 'none';
+          uploadBtn.disabled = false;
+          
+          if (result.success) {
+            showStatus('FAVICON CONVERSION SUCCESSFUL', true);
+            displayResults(result);
+          } else {
+            showStatus(`ERROR: ${result.error || 'CONVERSION FAILED'}`, false);
+          }
+        } catch (error) {
+          loading.style.display = 'none';
+          uploadBtn.disabled = false;
+          showStatus(`ERROR: ${error.message || 'CONNECTION FAILED'}`, false);
+        }
+      });
+      
+      // Display status message
+      function showStatus(message, isSuccess) {
+        status.textContent = message;
+        status.className = isSuccess ? 'success' : 'error';
         status.style.display = 'block';
+      }
+      
+      // Display conversion results
+      function displayResults(data) {
+        // Clear previous results
+        previewGrid.innerHTML = '';
+        
+        // Display favicon
+        if (data.output.favicon) {
+          addPreviewItem(
+            data.output.favicon.path,
+            data.output.favicon.format,
+            data.output.favicon.size
+          );
+        }
+        
+        // Display additional files
+        if (data.output.additional && data.output.additional.length) {
+          data.output.additional.forEach(file => {
+            addPreviewItem(file.path, file.format, file.size);
+          });
+        }
         
         // Show preview panel
-        document.getElementById('previewPanel').style.display = 'block';
-      }, 2000);
+        previewPanel.style.display = 'block';
+        
+        // Setup download all button
+        const allFiles = [
+          data.output.favicon,
+          ...(data.output.additional || [])
+        ].filter(Boolean).map(file => file.path);
+        
+        downloadAllBtn.onclick = () => {
+          allFiles.forEach(path => {
+            const link = document.createElement('a');
+            link.href = path;
+            link.download = path.split('/').pop();
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          });
+        };
+      }
+      
+      // Create preview item
+      function addPreviewItem(path, format, size) {
+        const item = document.createElement('div');
+        item.className = 'preview-item';
+        
+        const imageContainer = document.createElement('div');
+        imageContainer.className = 'preview-image';
+        
+        const img = document.createElement('img');
+        img.src = path;
+        img.alt = `${format} ${size}`;
+        img.style.maxWidth = '100%';
+        img.style.maxHeight = '64px';
+        
+        const sizeLabel = document.createElement('div');
+        sizeLabel.className = 'size-label';
+        sizeLabel.textContent = `${format} (${size})`;
+        
+        const link = document.createElement('a');
+        link.href = path;
+        link.className = 'download-link';
+        link.download = path.split('/').pop();
+        link.textContent = 'DOWNLOAD';
+        
+        imageContainer.appendChild(img);
+        item.appendChild(imageContainer);
+        item.appendChild(sizeLabel);
+        item.appendChild(link);
+        
+        previewGrid.appendChild(item);
+      }
     });
   </script>
 </body>
