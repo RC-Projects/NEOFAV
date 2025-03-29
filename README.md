@@ -2,7 +2,7 @@
 
 <div align="center">
   
-![NEOFAVICON](https://via.placeholder.com/800x200/0a0a12/00ffff?text=NEOFAVICON)
+![NEOFAVICON]
 
 **A cyberpunk-themed microservice for converting images to favicons**
 
@@ -40,46 +40,6 @@ NEOFAVICON is a standalone microservice that converts any image file into optimi
 - **Self-contained**: Runs as a standalone service, Docker container, or in Kubernetes
 - **Responsive Design**: Works on mobile and desktop devices
 - **Secure**: Strict file validation and sanitization
-
-## // QUICK START
-
-### Method 1: Local Deployment
-
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/neofavicon.git
-
-# Enter the directory
-cd neofavicon
-
-# Install dependencies
-npm install
-
-# Start the server
-npm start
-```
-
-### Method 2: Docker Deployment
-
-```bash
-# Build and run with Docker
-docker build -t neofavicon .
-docker run -p 3000:3000 neofavicon
-
-# Or use Docker Compose
-docker-compose up -d
-```
-
-### Method 3: Kubernetes Deployment
-
-```bash
-# Edit the Kubernetes manifest
-# Replace ${YOUR_DOCKER_REGISTRY} with your registry URL
-# Replace neofavicon.yourdomain.com with your domain
-
-# Apply the manifest
-kubectl apply -f kubernetes/deployment.yaml
-```
 
 ## // SYSTEM REQUIREMENTS
 
@@ -158,22 +118,6 @@ The system can be configured via environment variables:
 }
 ```
 
-## // SECURITY CONSIDERATIONS
-
-- All uploads are validated for file type
-- Files are stored in isolated directories
-- Temporary files are auto-deleted after processing
-- No external service dependencies
-- Container runs with non-root user
-
-## // TROUBLESHOOTING
-
-| Issue | Solution |
-|-------|----------|
-| Server won't start | Check port availability and permissions |
-| Upload errors | Verify file type and size limits |
-| Slow conversion | Check system resources, especially memory |
-| Container crashes | Review logs with `docker logs neofavicon` |
 
 ## // ARCHITECTURE
 
@@ -197,16 +141,3 @@ The system can be configured via environment variables:
 MIT License
 
 Copyright (c) 2025 NEOFAVICON SYSTEM
-
-## // ACKNOWLEDGMENTS
-
-- Node.js ecosystem
-- Express.js framework
-- Sharp image processing library
-- Cyberpunk aesthetic inspiration
-
-<div align="center">
-
-**[>> VISIT DEVELOPER SITE <<](https://yourdomain.com)**
-
-</div>
