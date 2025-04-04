@@ -162,7 +162,7 @@ app.post('/convert', upload.single('image'), async (req, res) => {
       },
       system: {
         processingTime: Date.now() - timestamp,
-        version: '1.0.0'
+        version: '1.3.1'
       }
     });
   } catch (error) {
